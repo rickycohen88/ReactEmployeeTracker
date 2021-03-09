@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import Table from "../Table/table";
-import Search from "../Search/search";
-import Sort from "../Sort/sort"
+import Table from "./Table";
+import Search from "./Search_Inputs";
+import Sort from "./Search_Inputs"
 import API from "../utils/API"
 
 class Container extends Component {
