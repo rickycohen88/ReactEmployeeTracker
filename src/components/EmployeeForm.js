@@ -1,124 +1,89 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
+import Table from "../Table/table";
+import Search from "../Search/search";
+import Sort from "../Sort/sort"
+import API from "../utils/API"
 
-class EmployeeForm extends Component{
-    // set forms initial state
+class Container extends Component {
     state = {
-        firstName:"",
-        lastName:"",
-        jobTitle:"",
-        department:"",
-        manager:"",
-        db:{}
-        
+        initEmployees: [],
+        employees: [],
+        lastName: "",
+        firstName: ""
+    }
+    componentDidMount() {
+        API()
+            .then(res =>
+                this.setState({
+                    employees: res.data.results,
+                    initEmployees: res.data.results,
+                })
+            )
     };
 
-    handleInputChanges = event => {
-        // Getting the value and name of the input which triggered the change
-        let value = event.target.value;
-        const name = event.target.name;
-
-        // Updating the input's state
+    handleInputChange = event => {
+        const value = event.target.value;
+        const name = event.target.name
         this.setState({
-          [name]: value
+            [name]: value
         });
-      };
-
-    handleSubmitForm = event => {
+    };
+   handleFirstNameSearch = event => {
         event.preventDefault();
-    if (!this.state.firstName || !this.state.lastName) {
-      alert("Fill out your first and last name please!");
-    } 
+        this.setState({
+            employees: this.state.employees.filter(employee => employee.name.first.toLowerCase().includes(this.state.firstName.toLowerCase()))
+        });
+    };
 
-    else {    
-      let dbObject;
-        // create a new db request for a "budget" database.
-        const request = indexedDB.open("budget", 1);
-        
-        request.onupgradeneeded = function(event) {
-           // create object store called "pending" and set autoIncrement to true
-          const db = event.target.result;
-          db.createObjectStore("reactEmployees", { autoIncrement: true });
-        };
-        
-        request.onsuccess = function(event) {
-          dbObject=event.target.result;
-        };
+    handleLastNameSearch = event => {
+        event.preventDefault();
+        this.setState({
+            employees: this.state.employees.filter(employee => employee.name.last.toLowerCase().includes(this.state.lastName.toLowerCase()))
+        });
+        console.log(this.state.initEmployees)
+    };
 
-        this.setState({db:dbObject});
-        
-        request.onerror = function(event) {
-          console.log("Woops! " + event.target.errorCode);
-        };
-      alert(`${this.state.firstName} ${this.state.lastName} has been added to the roster.`);
+    handleSort = event => {
+        const sortMethod = event.target.id;
+        switch (sortMethod) {
+            case "firstNameSorted":
+                this.setState({
+                    employees: this.state.initEmployees.sort((a, b) => a.name.first.localeCompare(b.name.first))})
+                break;
+            case "lastNameSorted":
+                this.setState({
+                    employees: this.state.initEmployees.sort((a, b) => a.name.last.localeCompare(b.name.last))})
+                break;
+            default:
+                this.setState({
+                    employees: this.state.employees
+                });
+        }
     }
-
-    this.setState({
-      firstName: "",
-      lastName: "",
-      jobTitle:"",
-      department:"",
-      manager:""
-    });
-
-    function saveRecord(record) {
-      // create a transaction on the pending db with readwrite access
-      const transaction = this.state.db.transaction(["reactEmployees"], "readwrite");
-    
-      // access your pending object store
-      const store = transaction.objectStore("reactEmployees");
-    
-      // add record to your store with add method.
-      store.add(record);
-    }
-
-  };
-
-    
-
-    render(){
+    render() {
         return (
-            <div>
-                <p>Please Enter the informantion for the employee you wish to add</p>
-                <form className="form">
-                    <input
-                    value={this.state.firstName}
-                    name="firstName"
-                    type="text"
-                    placeholder="First Name"
-                    onChange={this.handleInputChanges}
-                    />
-                    <input
-                    value={this.state.lastName}
-                    name="lastName"
-                    type="text"
-                    placeholder="Last Name"
-                    onChange={this.handleInputChanges}
-                    />
-                    <input
-                    value={this.state.title}
-                    name="jobTitle"
-                    type="text"
-                    placeholder="Job Title"
-                    onChange={this.handleInputChanges}
-                    />
-                    <input
-                    value={this.state.department}
-                    name="department"
-                    type="text"
-                    placeholder="Department"
-                    onChange={this.handleInputChanges}
-                    />
-                    <input
-                    value={this.state.manager}
-                    name="Manager"
-                    type="text"
-                    placeholder="Manager Name"
-                    onChange={this.handleInputChanges}
-                    />
-                    <button onClick={this.handleSubmitForm}>Submit</button>
-                </form>
+            <div className="container">
+                <h1 className="heading">Employee Directory</h1>
+                <div className="row">
+                    <div className="col-md-6">
+                        <Search
+                            handleInputChange={this.handleInputChange}
+                            handleLastNameSearch={this.handleLastNameSearch}
+                            handleFirstNameSearch={this.handleFirstNameSearch}
+                        />
+                    </div>
+                    <div className="col-md-6">
+                        <Sort
+                            handleSort={this.handleSort}
+                        />
+                    </div>
+                </div>
+                <Table
+                    employees={this.state.employees}
+                />
             </div>
-        );
-    }//end of render
-}//end of class
-export default EmployeeForm;
+        )
+    }
+};
+
+export default Container;
