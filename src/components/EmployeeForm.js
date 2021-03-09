@@ -8,7 +8,7 @@ class EmployeeForm extends Component{
         jobTitle:"",
         department:"",
         manager:"",
-        db:[]
+        db:{}
         
     };
 
@@ -44,7 +44,7 @@ class EmployeeForm extends Component{
           dbObject=event.target.result;
         };
 
-        this.setState({db:[dbObject]});
+        this.setState({db:dbObject});
         
         request.onerror = function(event) {
           console.log("Woops! " + event.target.errorCode);
