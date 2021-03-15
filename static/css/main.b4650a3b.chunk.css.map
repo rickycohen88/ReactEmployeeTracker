@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://src/employee.css"],"names":[],"mappings":"AAAA,KACI,eACJ,CAEA,KACI,wBAEJ,CAEA,SACI,kBACJ","file":"main.b4650a3b.chunk.css","sourcesContent":["html {\r\n    min-height: auto;\r\n}\r\n\r\nbody{\r\n    background-color: rgb(122, 173, 194);\r\n    \r\n}\r\n\r\n#heading{\r\n    align-items: center;\r\n}"]}
