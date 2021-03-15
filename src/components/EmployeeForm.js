@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import Table from "./Table";
-import Search from "./Search_Inputs";
-import Sort from "./Search_Inputs"
+import {Search} from "./Search_Inputs";
+import {Sort} from "./Search_Inputs"
 import API from "../utils/API"
+
 
 class Container extends Component {
     state = {
@@ -13,12 +14,13 @@ class Container extends Component {
     }
     componentDidMount() {
         API()
-            .then(res =>
+            .then(res =>{
+              console.log(res);
                 this.setState({
                     employees: res.data.results,
                     initEmployees: res.data.results,
                 })
-            )
+              })
     };
 
     handleInputChange = event => {
@@ -48,11 +50,13 @@ class Container extends Component {
         switch (sortMethod) {
             case "firstNameSorted":
                 this.setState({
-                    employees: this.state.initEmployees.sort((a, b) => a.name.first.localeCompare(b.name.first))})
+                    employees: this.state.initEmployees.sort((a, b) => a.name.first.localeCompare(b.name.first))
+                  })
                 break;
             case "lastNameSorted":
                 this.setState({
-                    employees: this.state.initEmployees.sort((a, b) => a.name.last.localeCompare(b.name.last))})
+                    employees: this.state.initEmployees.sort((a, b) => a.name.last.localeCompare(b.name.last))
+                  })
                 break;
             default:
                 this.setState({
@@ -63,7 +67,7 @@ class Container extends Component {
     render() {
         return (
             <div className="container">
-                <h1 className="heading">Employee Directory</h1>
+                <h1 className="heading">React Employee Directory</h1>
                 <div className="row">
                     <div className="col-md-6">
                         <Search
